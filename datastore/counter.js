@@ -4,6 +4,8 @@ const sprintf = require('sprintf-js').sprintf;
 
 var counter = 0;
 
+// Number(fs.readFile(exports.counterFile, (err, fileData) => fileData));
+
 // Private helper functions ////////////////////////////////////////////////////
 
 // Zero padded numbers can only be represented as strings.
@@ -38,9 +40,24 @@ const writeCounter = (count, callback) => {
 
 // Public API - Fix this function //////////////////////////////////////////////
 
-exports.getNextUniqueId = () => {
-  counter = counter + 1;
-  return zeroPaddedNumber(counter);
+exports.getNextUniqueId = (callback) => {
+  // counter = counter + 1;
+  // return zeroPaddedNumber(counter);
+  readCounter((err, count) => {
+    counter = count + 1;
+    writeCounter(counter, (err, counterString) => {
+      if (err) {
+        console.log(err);
+        return;
+      } else {
+        console.log(`successfully wrote ${counter} to memory`);
+      }
+
+      callback(null, zeroPaddedNumber(counter));
+    });
+  });
+
+  // return zeroPaddedNumber(counter);
 };
 
 
