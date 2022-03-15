@@ -14,19 +14,36 @@ exports.create = (text, callback) => {
       if (err) {
         throw ('error writing counter');
       }
+      items[id] = text;
+      callback(null, { id, text });
     });
-
-    items[id] = text;
-    callback(null, { id, text });
   });
 };
 
 exports.readAll = (callback) => {
-  var data = _.map(items, (text, id) => {
-    return { id, text };
+  fs.readdir(exports.dataDir, (err, files) => {
+    if (files.length === 0) {
+      callback(null, []);
+    } else {
+
+      var data = _.map(files, (file) => {
+        var newPath = path.join(exports.dataDir, id);
+        // fs.readFile(newPath);
+        return {
+          id: path.basename(newPath),
+          text: path.basename(newPath)
+        };
+      });
+      callback(null, data);
+    }
   });
-  callback(null, data);
 };
+
+// todos.readAll((err, todoList) => {
+//   expect(err).to.be.null;
+//   expect(todoList.length).to.equal(0);
+//   done();
+// }
 
 exports.readOne = (id, callback) => {
   var text = items[id];
