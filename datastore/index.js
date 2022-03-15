@@ -25,16 +25,26 @@ exports.readAll = (callback) => {
     if (files.length === 0) {
       callback(null, []);
     } else {
-      console.log('here');
-      var data = _.map(files, (file) => {
+      var promises = _.map(files, (file) => {
         var newPath = path.join(exports.dataDir, file);
-        // fs.readFile(newPath);
-        return {
-          id: path.basename(newPath, '.txt'),
-          text: path.basename(newPath, '.txt')
-        };
+        var id = path.basename(newPath, '.txt');
+
+        return new Promise((resolve, reject) => {
+          fs.readFile(newPath, (err, text) => {
+            if (err) {
+              reject(err);
+            } else {
+              console.log(text.toString());
+              resolve({
+                id: id,
+                text: text.toString()
+              });
+            }
+          });
+        });
       });
-      callback(null, data);
+
+      Promise.all(promises).then((data) => callback(null, data));
     }
   });
 };
