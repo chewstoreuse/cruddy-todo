@@ -25,13 +25,13 @@ exports.readAll = (callback) => {
     if (files.length === 0) {
       callback(null, []);
     } else {
-
+      console.log('here');
       var data = _.map(files, (file) => {
-        var newPath = path.join(exports.dataDir, id);
+        var newPath = path.join(exports.dataDir, file);
         // fs.readFile(newPath);
         return {
-          id: path.basename(newPath),
-          text: path.basename(newPath)
+          id: path.basename(newPath, '.txt'),
+          text: path.basename(newPath, '.txt')
         };
       });
       callback(null, data);
@@ -39,19 +39,16 @@ exports.readAll = (callback) => {
   });
 };
 
-// todos.readAll((err, todoList) => {
-//   expect(err).to.be.null;
-//   expect(todoList.length).to.equal(0);
-//   done();
-// }
-
 exports.readOne = (id, callback) => {
-  var text = items[id];
-  if (!text) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback(null, { id, text });
-  }
+  var newPath = path.join(exports.dataDir, `${id}.txt`);
+  fs.readFile(newPath, (err, text) => {
+    if (err) {
+      callback(new Error(`No item with id: ${id}`));
+    } else {
+      text = text.toString();
+      callback(null, { id, text });
+    }
+  });
 };
 
 exports.update = (id, text, callback) => {
