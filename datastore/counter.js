@@ -41,13 +41,11 @@ const writeCounter = (count, callback) => {
 // Public API - Fix this function //////////////////////////////////////////////
 
 exports.getNextUniqueId = (callback) => {
-  // counter = counter + 1;
-  // return zeroPaddedNumber(counter);
   readCounter((err, count) => {
     counter = count + 1;
     writeCounter(counter, (err, counterString) => {
       if (err) {
-        console.log(err);
+        console.log(err, 'getNextUniqueId writeCounter');
         return;
       } else {
         console.log(`successfully wrote ${counter} to memory`);
@@ -56,8 +54,6 @@ exports.getNextUniqueId = (callback) => {
       callback(null, zeroPaddedNumber(counter));
     });
   });
-
-  // return zeroPaddedNumber(counter);
 };
 
 
